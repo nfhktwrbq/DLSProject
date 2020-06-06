@@ -6,7 +6,7 @@ import torch.optim as optim
 from PIL import Image
 import torchvision.transforms as transforms
 import copy
-
+import torchvision.models as models
 
 
 class SimpleCnn(nn.Module):
@@ -114,8 +114,8 @@ class StyleTransfer:
         self.style_img = self.image_loader(style_image)
         self.content_img = self.image_loader(content_image)
 
-        #self.cnn = models.vgg19(pretrained=True).features.to(self.device).eval()
-        self.cnn = SimpleCnn().to(self.device).eval()
+        self.cnn = models.vgg19(pretrained=True).features.to(self.device).eval()
+        #self.cnn = SimpleCnn().to(self.device).eval()
 
         self.cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
         self.cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
@@ -144,12 +144,6 @@ class StyleTransfer:
         # by dividing by the number of element in each feature maps.
         return G.div(a * b * c * d)
 
-        def forward(self, img):
-            # normalize img
-            return (img - self.mean) / self.std
-
-
-
     def get_style_model_and_losses(self, cnn, normalization_mean, normalization_std,
                                    style_img, content_img,
                                    content_layers=None,
@@ -175,8 +169,8 @@ class StyleTransfer:
 
         i = 0  # increment every time we see a conv
 
-        #for layer in cnn.children():
-        for layer in cnn.net.children():
+        for layer in cnn.children():
+        #for layer in cnn.net.children():
             if isinstance(layer, nn.Conv2d):
                 i += 1
                 name = 'conv_{}'.format(i)
@@ -223,7 +217,7 @@ class StyleTransfer:
 
     def get_input_optimizer(self, input_img):
         # this line to show that input is a parameter that requires a gradient
-        optimizer = optim.LBFGS([input_img.requires_grad_()])
+        optimizer = optim.LBFGS([input_img.requires_grad_()], lr=1)
         return optimizer
 
     def run_style_transfer(self, cnn, normalization_mean, normalization_std,
