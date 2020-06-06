@@ -14,6 +14,7 @@ from styleTransfer import StyleTransfer
 import torchvision.transforms as transforms
 import asyncio
 from GAN.pix2pix import Pix2pix
+import torch
 
 SOCK5IP = 'ss-01.s5.ynvv.cc'
 SOCK5PORT = '999'

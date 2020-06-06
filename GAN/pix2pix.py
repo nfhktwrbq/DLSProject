@@ -42,8 +42,8 @@ class Pix2pix:
         torch.save(model_weights, path + "model_dsc.pth") 
 
     def loadModels(self, path):
-        self.gen.load_state_dict(torch.load(path +  "model_gen.pth"))
-        self.dsc.load_state_dict(torch.load(path + "model_dsc.pth"))
+        self.gen.load_state_dict(torch.load(path +  "model_gen.pth", map_location=torch.device('cpu')))
+        self.dsc.load_state_dict(torch.load(path + "model_dsc.pth", map_location=torch.device('cpu')))
 
     def lossGan(self, yPred, yReal, eps = 1e-7):
         yReal = (yReal - yReal.min())/(yReal.max() - yReal.min())
