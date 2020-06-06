@@ -107,7 +107,7 @@ class Normalization(nn.Module):
 class StyleTransfer:
     def __init__(self, style_image, content_image):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.imsize = 512 if torch.cuda.is_available() else 128  # use small size if no gpu
+        self.imsize = 512 if torch.cuda.is_available() else 512  # use small size if no gpu
         self.loader = transforms.Compose([
             transforms.Resize((self.imsize, self.imsize)),  # scale imported image
             transforms.ToTensor()])  # transform it into a torch tensor
