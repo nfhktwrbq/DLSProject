@@ -47,7 +47,8 @@ class StyleTransfer:
             transforms.ToTensor()])
         self.style_img = self.image_loader(style_image)
         self.content_img = self.image_loader(content_image)
-        self.cnn = models.vgg19(pretrained=True).features.to(self.device).eval()
+        #self.cnn = models.vgg19(pretrained=True).features.to(self.device).eval()
+        self.cnn = models.alexnet(pretrained=True).features.to(self.device).eval()
         self.cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
         self.cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
         self.content_layers_default = [ 'conv_4']
