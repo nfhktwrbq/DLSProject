@@ -15,6 +15,7 @@ from styleTransfer import StyleTransfer
 import torchvision.transforms as transforms
 import asyncio
 from GAN.pix2pix import Pix2pix
+import threading
 
 SOCK5IP = 'ss-01.s5.ynvv.cc'
 SOCK5PORT = '999'
@@ -80,6 +81,11 @@ def createConvDir(convType):
     resPath = path + parentDir + '/' + dirPref+convType + str(indmax)
     os.mkdir(resPath)
     return resPath
+
+def conversion(st, resPath):
+    out = st.getOutput()
+    img = transforms.ToPILImage(mode='RGB')(out.cpu()[0])
+    img.save(resPath)
 
 # States
 class Form(StatesGroup):
@@ -168,11 +174,13 @@ async def answer_photo(msg: types.Message, state: FSMContext):
 
     await bot.send_message(msg.from_user.id, 'Wait...')
 
-    out = StyleTransfer(data['ST1'] + '/' + 'style', data['ST1'] + '/' + 'content').getOutput()
-    img = transforms.ToPILImage(mode='RGB')(out.cpu()[0])
-    img.save(resPath)
+    conversion_thread = threading.Thread(target=conversion, args=(StyleTransfer(data['ST1'] + '/' + 'style', data['ST1'] + '/' + 'content'), resPath,))
+    conversion_thread.start()
 
-    await asyncio.sleep(1)
+    while(conversion_thread.is_alive()):
+        await asyncio.sleep(5)
+        await bot.send_message(msg.from_user.id, 'Wait...')
+
     await types.ChatActions.upload_photo()
     media = types.MediaGroup()
     media.attach_photo(types.InputFile(resPath), 'Ready!')

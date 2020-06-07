@@ -51,7 +51,7 @@ class StyleTransfer:
         self.cnn = models.alexnet(pretrained=True).features.to(self.device).eval()
         self.cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
         self.cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
-        self.content_layers_default = [ 'conv_4']
+        self.content_layers_default = [ 'conv_1',]
         self.style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
 
@@ -121,11 +121,11 @@ class StyleTransfer:
         return model, style_losses, content_losses
 
     def get_input_optimizer(self, input_img):
-        optimizer = optim.LBFGS([input_img.requires_grad_()], lr=1)
+        optimizer = optim.LBFGS([input_img.requires_grad_()], lr=0.07)
         return optimizer
 
     def run_style_transfer(self, cnn, normalization_mean, normalization_std,
-                           content_img, style_img, input_img, num_steps=300,
+                           content_img, style_img, input_img, num_steps=500,
                            style_weight=1000000, content_weight=1):
 
         print('Building the style transfer model..')
