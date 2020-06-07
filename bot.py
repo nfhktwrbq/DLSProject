@@ -32,7 +32,7 @@ WEBHOOK_PATH = f'/webhook/{TOKEN}'
 WEBHOOK_URL = urljoin(WEBHOOK_HOST, WEBHOOK_PATH)
 
 # webserver settings
-WEBAPP_HOST = 'localhost'  # or ip
+WEBAPP_HOST = '0.0.0.0'  # or ip
 WEBAPP_PORT = int(os.environ.get('PORT', 5000))
 
 button_styleTransfer = KeyboardButton(BUTTON1_NAME)
