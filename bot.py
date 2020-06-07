@@ -204,7 +204,7 @@ async def answer_photo(msg: types.Message, state: FSMContext):
     await state.finish()
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    #executor.start_polling(dp)
     executor.start_webhook(
         dispatcher=dp,
         webhook_path=WEBHOOK_PATH,
