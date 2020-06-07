@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
@@ -26,7 +28,8 @@ TOKEN = os.environ['TOKEN']
 
 WEBHOOK_HOST = os.environ['WEBHOOK_HOST_ADDR']
 WEBHOOK_PATH = f'/webhook/{TOKEN}'
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+#WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+WEBHOOK_URL = urljoin(WEBHOOK_HOST, WEBHOOK_PATH)
 
 # webserver settings
 WEBAPP_HOST = 'localhost'  # or ip
