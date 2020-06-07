@@ -121,11 +121,11 @@ class StyleTransfer:
         return model, style_losses, content_losses
 
     def get_input_optimizer(self, input_img):
-        optimizer = optim.LBFGS([input_img.requires_grad_()], lr=0.07)
+        optimizer = optim.LBFGS([input_img.requires_grad_()], lr=0.2)
         return optimizer
 
     def run_style_transfer(self, cnn, normalization_mean, normalization_std,
-                           content_img, style_img, input_img, num_steps=500,
+                           content_img, style_img, input_img, num_steps=100,
                            style_weight=1000000, content_weight=1):
 
         print('Building the style transfer model..')
