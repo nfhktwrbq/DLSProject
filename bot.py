@@ -1,7 +1,6 @@
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
-from config import TOKEN
 import aiohttp
 import requests
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
@@ -23,8 +22,10 @@ SOCK5PASS = 'lMP3XQqd'
 BUTTON1_NAME = 'Style Transfer'
 BUTTON2_NAME = 'GAN'
 
-WEBHOOK_HOST = 'https://sleepy-plateau-32377.herokuapp.com/'
-WEBHOOK_PATH = TOKEN
+TOKEN = os.environ['TOKEN']
+
+WEBHOOK_HOST = os.environ['WEBHOOK_HOST_ADDR']
+WEBHOOK_PATH = f'/webhook/{TOKEN}'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 # webserver settings
@@ -84,7 +85,28 @@ class Form(StatesGroup):
     ST2 = State()
     GAN = State()
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands='help')
+async def process_start_command(message: types.Message):
+    await Form.select.set()
+    await message.reply("Hi!\nThis is bot for neural style transfer and GAN image generation. You can test it.",
+                        reply_markup=types.ReplyKeyboardRemove())
+    await asyncio.sleep(1)
+    await types.ChatActions.upload_photo()
+    media = types.MediaGroup()
+
+    await message.answer("Trehe are style and content images for NST")
+    media.attach_photo(types.InputFile('./samples/StyleTransfer/style.jpg'))
+    media.attach_photo(types.InputFile('./samples/StyleTransfer/content.jpg'))
+    await message.answer_media_group(media=media)
+
+    media = types.MediaGroup()
+    await message.answer("Trehe is input guitar sketch for GAN")
+    media.attach_photo(types.InputFile('./samples/GuitarSketch/guitar.png'), )
+    await message.answer_media_group(media=media)
+
+    await message.answer('"/start" - start conversions.\n"/cancel" - cancel conversion.')
+
+@dp.message_handler(commands='start')
 async def process_start_command(message: types.Message):
     await Form.select.set()
     await message.reply("Hi!\nChoose conversion", reply_markup=greet_kb)
@@ -104,7 +126,6 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     if current_state is None:
         return
 
-    await message.reply("Cancel", reply_markup=greet_kb)
     await state.finish()
     await message.reply('Cancelled.', reply_markup=types.ReplyKeyboardRemove())
 
@@ -184,10 +205,11 @@ if __name__ == '__main__':
     #executor.start_polling(dp)
     executor.start_webhook(
         dispatcher=dp,
-        webhook_path="",#WEBHOOK_PATH,
+        webhook_path=WEBHOOK_PATH,
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
         host=WEBAPP_HOST,
         port=WEBAPP_PORT,
     )
+
