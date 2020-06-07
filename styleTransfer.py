@@ -63,7 +63,7 @@ class StyleTransfer:
         a, b, c, d = input.size()
         features = input.view(a * b, c * d)
         G = torch.mm(features, features.t())
-        return G.div(a * b * c * d)
+        return G.div(float(a * b * c * d))
 
     def get_style_model_and_losses(self, cnn, normalization_mean, normalization_std,
                                    style_img, content_img,
@@ -75,16 +75,12 @@ class StyleTransfer:
             style_layers = self.style_layers_default
 
         cnn = copy.deepcopy(cnn)
-
         normalization = Normalization(normalization_mean, normalization_std).to(self.device)
-
         content_losses = []
         style_losses = []
-
         model = nn.Sequential(normalization)
 
         i = 0
-
         for layer in cnn.children():
             if isinstance(layer, nn.Conv2d):
                 i += 1
