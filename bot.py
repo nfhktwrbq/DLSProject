@@ -14,7 +14,6 @@ from styleTransfer import StyleTransfer
 import torchvision.transforms as transforms
 import asyncio
 from GAN.pix2pix import Pix2pix
-import torch
 
 SOCK5IP = 'ss-01.s5.ynvv.cc'
 SOCK5PORT = '999'
@@ -23,6 +22,14 @@ SOCK5PASS = 'lMP3XQqd'
 
 BUTTON1_NAME = 'Style Transfer'
 BUTTON2_NAME = 'GAN'
+
+WEBHOOK_HOST = 'https://sleepy-plateau-32377.herokuapp.com/'
+WEBHOOK_PATH = TOKEN
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+# webserver settings
+WEBAPP_HOST = 'localhost'  # or ip
+WEBAPP_PORT = int(os.environ.get('PORT', 5000))
 
 button_styleTransfer = KeyboardButton(BUTTON1_NAME)
 button_GAN = KeyboardButton(BUTTON2_NAME)
@@ -81,6 +88,14 @@ class Form(StatesGroup):
 async def process_start_command(message: types.Message):
     await Form.select.set()
     await message.reply("Hi!\nChoose conversion", reply_markup=greet_kb)
+
+async def on_startup(dp):
+    await bot.set_webhook(WEBHOOK_URL)
+
+async def on_shutdown(dp):
+    await bot.delete_webhook()
+    await dp.storage.close()
+    await dp.storage.wait_closed()
 
 @dp.message_handler(state='*', commands='cancel')
 @dp.message_handler(Text(equals='cancel', ignore_case=True), state='*')
@@ -166,4 +181,13 @@ async def answer_photo(msg: types.Message, state: FSMContext):
     await state.finish()
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    #executor.start_polling(dp)
+    executor.start_webhook(
+        dispatcher=dp,
+        webhook_path=WEBHOOK_PATH,
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        skip_updates=True,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
