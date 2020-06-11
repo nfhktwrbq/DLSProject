@@ -90,7 +90,6 @@ class Form(StatesGroup):
 
 @dp.message_handler(commands='help')
 async def process_start_command(message: types.Message):
-    await Form.select.set()
     await message.reply("Hi!\nThis is bot for neural style transfer and GAN image generation. You can test it.",
                         reply_markup=types.ReplyKeyboardRemove())
     await asyncio.sleep(1)
