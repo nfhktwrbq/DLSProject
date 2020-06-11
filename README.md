@@ -1,6 +1,15 @@
 **This is project for [Deep Learning school](https://stepik.org/course/65389/syllabus)
 Telegram Bot [Aiogram framework](https://aiogram.readthedocs.io/en/latest/index.html) for Neural Style Transform and coGAN implemented pyTorch**
 
+## Interface ([You can watch bot interface demo on youtube](https://www.youtube.com/watch?v=k4BPU48yM2E))
+> /help - give short info about bot. Also send some samples for examine functioanlity
+
+> /start - invoke keyboard for select from two possible conversions - NST or GAN. After selection confirm bot demand corresponding conversion images
+
+> /cancel - you can cancel process if you change your mind for selected conversion
+
+
+<br /> 
 
 **NEURAL STYLE TRANSFER**
 | CONTENT   |      STYLE      |  OUTPUT |
